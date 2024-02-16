@@ -1,11 +1,11 @@
 server {
 	listen 80;
 
-	root /var/www/html/abcedsadasdasd;
+	root /var/www/html/meow.cpe36.net;
 
 	index index.php index.html index.htm index.nginx-debian.html;
 
-	server_name abcedsadasdasd;
+	server_name meow.cpe36.net;
 
 	location / {
 		try_files $uri $uri/ =404;

@@ -43,6 +43,13 @@ clean() {
 	fi
 }
 
+# get_dns_self(void) -> string: Gets the reversed host portions of host's IP.
+get_dns_self() {
+	host_1=$(hostname -i | sed -e "s/[0-9]*\.[0-9]*\.//" -e "s/\([0-9]*\).[0-9]*/\1/")
+	host_2=$(hostname -i | sed -e "s/[0-9]*\.[0-9]*\.//" -e "s/[0-9]*.\([0-9]*\)/\1/")
+	echo "$host_2.$host_1"
+}
+
 # --- --- --- MAIN --- --- ---
 
 # Clean the temp directory
@@ -55,8 +62,6 @@ clean
 echo -n ">> Enter server name (e.g. python.cpe36.net): "
 read server_name
 server_name=$(echo $server_name | tr -d ' ')
-
-echo $server_name
 
 # Copy the Nginx template file to temp
 
@@ -72,5 +77,7 @@ replace "root" "$html_path/$server_name;" $temp_nginx_config_path
 replace "server_name" "$server_name;" $temp_nginx_config_path
 replace_simple "\[server_name\]" "$server_name" $temp_index_path
 
+line="$(get_dns_self)\tIN\tPTR\t$server_name.\t;"
+echo $line >> reverse
 
 
