@@ -26,6 +26,11 @@ sites_available_path=$nginx_path'/sites-available'
 sites_enabled_path=$nginx_path'/sites-enabled'
 
 server_name=$(match server_name)
+db_name=$(match db_name)
+db_reverse_lookup_name=$(match db_reverse_lookup_name)
+
+dns_forward_lookup_path=$zones_path/$db_name
+dns_reverse_lookup_path=$zones_path/$db_reverse_lookup_name
 
 sample_nginx_config_path=$(match sample_nginx_config_path)
 sample_index_path=$(match sample_index_path)
@@ -38,7 +43,7 @@ clean() {
 		echo "Risky temp path: '$temp_path'. Consider changing 'temp_path' in config file '$cfg_path'."
 		exit 1
 	else
-		# find $temp_path -mindepth 1 -delete	
+		find $temp_path -mindepth 1 -delete	
 		echo "Temp directory cleaned successfully."
 	fi
 }
@@ -65,8 +70,8 @@ server_name=$(echo $server_name | tr -d ' ')
 
 # Copy the Nginx template file to temp
 
-temp_nginx_config_path="$temp_path/temp_nginx_config"
-temp_index_path="$temp_path/temp_index.html"
+temp_nginx_config_path="$temp_path/$server_name"
+temp_index_path="$temp_path/index.html"
 
 cp $sample_nginx_config_path $temp_nginx_config_path
 cp $sample_index_path $temp_index_path
@@ -77,7 +82,21 @@ replace "root" "$html_path/$server_name;" $temp_nginx_config_path
 replace "server_name" "$server_name;" $temp_nginx_config_path
 replace_simple "\[server_name\]" "$server_name" $temp_index_path
 
+# Copy the DNS forward & reverse lookup database files to temp
+
+temp_dns_forward_path="$temp_path/$db_name"
+temp_dns_reverse_path="$temp_path/$db_reverse_lookup_name"
+
+cp $dns_forward_lookup_path $temp_dns_forward_path
+cp $dns_reverse_lookup_path $temp_dns_reverse_path
+
 line="$(get_dns_self)\tIN\tPTR\t$server_name.\t;"
-echo $line >> reverse
+echo $line >> $temp_dns_reverse_path
+
+line="$server_name.\t\tIN\tA\t$(hostname -i)"
+echo $line >> $temp_dns_forward_path
+
+
+
 
 
