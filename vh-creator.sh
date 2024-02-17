@@ -196,3 +196,4 @@ echo "To revert the DNS configurations to an earlier state, type:"
 printf $YELLOW"mv $timestamped_backup_path/* $zones_path"$RESET"\n"
 echo
 
+exit 0
