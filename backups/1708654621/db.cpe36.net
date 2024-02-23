@@ -1,0 +1,22 @@
+;
+; BIND data file for local loopback interface
+;
+$TTL	604800
+@	IN	SOA	wannahan.cpe36.net. admin.cpe36.net. (
+			      2		; Serial
+			 604800		; Refresh
+			  86400		; Retry
+			2419200		; Expire
+			 604800 )	; Negative Cache TTL
+
+;
+	IN	NS	wannahan.cpe36.net.
+;
+wannahan.cpe36.net.	IN	A	10.3.132.18
+ittiwat.cpe36.net.	IN	A	10.3.132.31
+food.cpe36.net.   	IN	A	10.3.132.40
+japan.cpe36.net.		IN	A	10.3.132.40
+sundayenjoyer.cpe36.net.	IN	A	10.3.133.38
+ws.cpe36.net.		IN	A	10.3.132.18
+testssl.cpe36.net.	IN	A	10.3.132.18
+yourdata.cpe36.net.	IN	A	10.3.132.18

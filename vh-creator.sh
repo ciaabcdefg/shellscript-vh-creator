@@ -57,9 +57,14 @@ clean() {
 
 # get_dns_self(void) -> string: Gets the reversed host portions of host's IP.
 get_dns_self() {
-	host_1=$(hostname -i | sed -e "s/[0-9]*\.[0-9]*\.//" -e "s/\([0-9]*\).[0-9]*/\1/")
-	host_2=$(hostname -i | sed -e "s/[0-9]*\.[0-9]*\.//" -e "s/[0-9]*.\([0-9]*\)/\1/")
+	hostname=$(hostname -i | grep -o "[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*")
+	host_1=$(echo $hostname | sed -e "s/[0-9]*\.[0-9]*\.//" -e "s/\([0-9]*\).[0-9]*/\1/")
+	host_2=$(echo $hostname | sed -e "s/[0-9]*\.[0-9]*\.//" -e "s/[0-9]*.\([0-9]*\)/\1/")
 	echo "$host_2.$host_1"
+}
+
+get_hostname() {
+	echo $(hostname -i | grep -o "[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*")
 }
 
 # --- --- --- MAIN --- --- ---
@@ -100,10 +105,10 @@ cp $dns_reverse_lookup_path $temp_dns_reverse_path
 # Modify the database files
 
 line="$(get_dns_self)\tIN\tPTR\t$server_name.\t;"
-echo $line >> $temp_dns_reverse_path
+echo -e $line >> $temp_dns_reverse_path
 
-line="$server_name.\t\tIN\tA\t$(hostname -i)"
-echo $line >> $temp_dns_forward_path
+line="$server_name.\t\tIN\tA\t$(get_hostname)"
+echo -e $line >> $temp_dns_forward_path
 
 # Back up the DNS database files in case things go wrong
 
