@@ -50,7 +50,8 @@ clean() {
 		echo "Risky temp path: '$temp_path'. Consider changing 'temp_path' in config file '$cfg_path'."
 		exit 1
 	else
-		find $temp_path -mindepth 1 -delete	
+		find $temp_path -mindepth 1 -delete
+		touch $temp_path/.gitkeep
 		# echo "Temp directory cleaned successfully."
 	fi
 }
